@@ -46,6 +46,11 @@ export const navigation = {
 
 		const dirData = await readdir(store.currentDir, { withFileTypes: true });
 
+		if (!dirData.length) {
+			console.log(`${colorText({ text: `[empty folder]`, style: 'FAINT' })}`);
+			return RESULT.ok;
+		}
+
 		const dirList = [];
 		let maxLengthName = 0;
 		for (const dirElement of dirData) {
