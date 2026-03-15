@@ -7,14 +7,11 @@ import { RESULT } from '../constants/result.js';
 import { store } from '../store/store.js';
 import { checkIsFileExists } from '../utils/check-is-file-exists.js';
 import { checkIsFolderExists } from '../utils/check-is-folder-exists.js';
-
-const pathResolver = (pathToResolve) => {
-	return path.join(store.currentDir, pathToResolve);
-};
+import { pathResolver } from '../utils/path-resolver.js';
 
 export async function csvToJson(args) {
-	const inputPath = pathResolver(args.input);
-	const outputPath = pathResolver(args.output);
+	const { file: inputPath } = await pathResolver(store.currentDir, args.input);
+	const { file: outputPath } = await pathResolver(store.currentDir, args.output);
 
 	if (!inputPath || !outputPath) return RESULT.invalidInput;
 
