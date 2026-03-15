@@ -9,6 +9,63 @@ import { checkIsFileExists } from '../utils/check-is-file-exists.js';
 import { checkIsFolderExists } from '../utils/check-is-folder-exists.js';
 import { pathResolver } from '../utils/path-resolver.js';
 
+class CsvToJsonTransform extends Transform {
+	constructor() {
+		super();
+		this.headerKeys = null;
+		this.buffer = '';
+		this.isFirstLine = true;
+	}
+
+	pushLines(lines) {
+		lines.forEach((line) => {
+			if (!line) return;
+			if (!this.isFirstLine) {
+				this.push(',\n');
+			} else {
+				this.isFirstLine = false;
+			}
+
+			this.push(`\t{ `);
+			const values = line.split(',');
+			values.forEach((value, index) => {
+				if (index > 0) this.push(', ');
+				this.push(`"${this.headerKeys[index]}": "${value}"`);
+			});
+			this.push(` }`);
+		});
+	}
+
+	_transform(chunk, encoding, callback) {
+		const text = String(chunk);
+
+		this.buffer = this.buffer + text;
+
+		const lines = this.buffer.split('\n');
+		if (!this.headerKeys && lines.length > 0) {
+			this.headerKeys = lines.shift().split(',');
+			this.push(`[\n`);
+		}
+
+		this.buffer = lines.pop();
+
+		this.pushLines(lines);
+
+		callback();
+	}
+
+	_flush(callback) {
+		const lines = this.buffer.split('\n');
+
+		this.pushLines(lines);
+		this.push(`\n]\n`);
+
+		this.headerKeys = null;
+		this.buffer = '';
+		callback();
+	}
+}
+
 export async function csvToJson(args) {
 	const { file: inputPath } = await pathResolver(store.currentDir, args.input);
 	const { file: outputPath } = await pathResolver(store.currentDir, args.output);
@@ -27,58 +84,7 @@ export async function csvToJson(args) {
 	const output = createWriteStream(outputPath);
 	const input = createReadStream(inputPath);
 
-	let headerKeys = null;
-	let buffer = '';
-	let isFirstLine = true;
-
-	const pushLines = (stream, lines) => {
-		lines.forEach((line) => {
-			if (!line) return;
-			if (!isFirstLine) {
-				stream.push(',\n');
-			} else {
-				isFirstLine = false;
-			}
-
-			stream.push(`\t{ `);
-			const values = line.split(',');
-			values.forEach((value, index) => {
-				if (index > 0) stream.push(', ');
-				stream.push(`"${headerKeys[index]}": "${value}"`);
-			});
-			stream.push(` }`);
-		});
-	};
-
-	const transformStream = new Transform({
-		transform(chunk, encoding, callback) {
-			const text = String(chunk);
-
-			buffer = buffer + text;
-
-			const lines = buffer.split('\n');
-			if (!headerKeys && lines.length > 0) {
-				headerKeys = lines.shift().split(',');
-				this.push(`[\n`);
-			}
-
-			buffer = lines.pop();
-
-			pushLines(this, lines);
-
-			callback();
-		},
-		flush(callback) {
-			const lines = buffer.split('\n');
-
-			pushLines(this, lines);
-			this.push(`\n]\n`);
-
-			headerKeys = null;
-			buffer = '';
-			callback();
-		},
-	});
+	const transformStream = new CsvToJsonTransform();
 
 	await pipeline(input, transformStream, output);
 
