@@ -1,13 +1,8 @@
 import { createReadStream, createWriteStream } from 'node:fs';
-import { mkdir } from 'node:fs/promises';
-import path from 'node:path';
 import { Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { RESULT } from '../constants/result.js';
-import { store } from '../store/store.js';
-import { checkIsFileExists } from '../utils/check-is-file-exists.js';
-import { checkIsFolderExists } from '../utils/check-is-folder-exists.js';
-import { pathResolver } from '../utils/path-resolver.js';
+import { fileTransformPathPrepare } from '../helpers/file-transform-path-prepare.js';
 
 class CsvToJsonTransform extends Transform {
 	constructor() {
@@ -67,24 +62,11 @@ class CsvToJsonTransform extends Transform {
 }
 
 export async function csvToJson(args) {
-	if (args.input === undefined || args.output === undefined) return RESULT.invalidInput;
+	const path = await fileTransformPathPrepare(args);
+	if (!path) return RESULT.invalidInput;
 
-	const { file: inputPath } = await pathResolver(store.currentDir, args.input);
-	const { file: outputPath } = await pathResolver(store.currentDir, args.output);
-
-	if (!inputPath || !outputPath) return RESULT.invalidInput;
-
-	const isInputFileExists = await checkIsFileExists(inputPath);
-	if (!isInputFileExists) return RESULT.invalidInput;
-
-	const outputPathDir = path.dirname(outputPath);
-	const isOutputDirExists = await checkIsFolderExists(outputPathDir);
-	if (!isOutputDirExists) {
-		await mkdir(outputPathDir, { recursive: true });
-	}
-
-	const output = createWriteStream(outputPath);
-	const input = createReadStream(inputPath);
+	const output = createWriteStream(path.outputPath);
+	const input = createReadStream(path.inputPath);
 
 	const transformStream = new CsvToJsonTransform();
 

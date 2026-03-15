@@ -11,8 +11,8 @@ export async function pathResolver(currentPath, pathToResolve) {
 	const isFolderExists = await checkIsFolderExists(resolvedPath);
 
 	return {
-		file: isFileExists ? resolvedPath : null,
-		folder: isFolderExists ? resolvedPath : null,
-		isPathExists: isFileExists || isFolderExists,
+		isFileExists,
+		isFolderExists,
+		resolvedPath,
 	};
 }

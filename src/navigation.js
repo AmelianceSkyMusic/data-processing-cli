@@ -36,8 +36,11 @@ export const navigation = {
 	cd: async (cdPath) => {
 		if (!cdPath) return RESULT.invalidInput;
 
-		const { folder: nextPath } = await pathResolver(store.currentDir, cdPath);
-		if (!nextPath) return RESULT.operationFailed;
+		const { isFolderExists, resolvedPath: nextPath } = await pathResolver(
+			store.currentDir,
+			cdPath,
+		);
+		if (!isFolderExists) return RESULT.operationFailed;
 		store.currentDir = nextPath;
 		return RESULT.ok;
 	},
