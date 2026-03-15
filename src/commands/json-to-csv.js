@@ -59,7 +59,7 @@ class JsonToCsvTransform extends Transform {
 
 export async function jsonToCsv(args) {
 	const path = await fileTransformPathPrepare(args);
-	if (!path) return RESULT.invalidInput;
+	if (!path) return RESULT.operationFailed;
 
 	const output = createWriteStream(path.outputPath);
 	const input = createReadStream(path.inputPath);
