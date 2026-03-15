@@ -4,10 +4,12 @@ const QUOTES_REPLACE_REG_EXP = /^["']|["']$/g;
 
 export function argParser(line) {
 	const preparedLine = line.trim();
-	if (!preparedLine) return { command: null, args: [], argsLine: '' };
+	if (!preparedLine) return { command: null, args: {}, argsList: [], argsLine: '' };
 
 	const firstSpaceIndex = preparedLine.indexOf(' ');
-	if (firstSpaceIndex === -1) return { command: preparedLine, args: [], argsLine: '' };
+	if (firstSpaceIndex === -1) {
+		return { command: preparedLine, args: {}, argsList: [], argsLine: '' };
+	}
 
 	const command = preparedLine.slice(0, firstSpaceIndex);
 	const argsLine = preparedLine.slice(firstSpaceIndex).trim();
