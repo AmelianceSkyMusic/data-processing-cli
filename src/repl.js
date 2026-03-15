@@ -14,6 +14,7 @@ export async function repl(line) {
 		[COMMAND.up]: () => navigation.up(argsList),
 		[COMMAND.cd]: () => navigation.cd(argsLine),
 		[COMMAND.ls]: () => navigation.ls(argsList),
+		[COMMAND.csvToJson]: () => csvToJson(args),
 	});
 
 	if (!doAction || typeof doAction !== 'function') return RESULT.invalidInput;
