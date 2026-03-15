@@ -4,4 +4,5 @@ export const COMMAND = {
 	cd: 'cd',
 	ls: 'ls',
 	csvToJson: 'csv-to-json',
+	jsonToCsv: 'json-to-csv',
 };
