@@ -67,6 +67,8 @@ class CsvToJsonTransform extends Transform {
 }
 
 export async function csvToJson(args) {
+	if (args.input === undefined || args.output === undefined) return RESULT.invalidInput;
+
 	const { file: inputPath } = await pathResolver(store.currentDir, args.input);
 	const { file: outputPath } = await pathResolver(store.currentDir, args.output);
 
