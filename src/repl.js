@@ -1,3 +1,4 @@
+import { count } from './commands/count.js';
 import { csvToJson } from './commands/csv-to-json.js';
 import { COMMAND } from './constants/command.js';
 import { RESULT } from './constants/result.js';
@@ -16,6 +17,7 @@ export async function repl(line) {
 		[COMMAND.ls]: () => navigation.ls(argsList),
 		[COMMAND.csvToJson]: () => csvToJson(args),
 		[COMMAND.jsonToCsv]: () => jsonToCsv(args),
+		[COMMAND.count]: () => count(args),
 	});
 
 	if (!doAction || typeof doAction !== 'function') return RESULT.invalidInput;

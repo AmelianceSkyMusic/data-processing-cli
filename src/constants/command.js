@@ -5,4 +5,5 @@ export const COMMAND = {
 	ls: 'ls',
 	csvToJson: 'csv-to-json',
 	jsonToCsv: 'json-to-csv',
+	count: 'count',
 };
