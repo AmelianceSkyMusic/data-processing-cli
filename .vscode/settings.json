@@ -1,0 +1,23 @@
+{
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/.DS_Store": true,
+		"**/Thumbs.db": true
+	},
+	"hide-files.files": [],
+	"editor.formatOnPaste": true,
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.codeActionsOnSave": {
+		"source.fixAll": "never",
+		"source.fixAll.eslint": "explicit"
+	},
+	"cSpell.language": "uk,en,en-US,lorem",
+	"files.eol": "\n",
+	"checkpoints.showActiveFileOnly": true,
+	"[snippets]": {
+		"editor.defaultFormatter": "vscode.json-language-features"
+	}
+}

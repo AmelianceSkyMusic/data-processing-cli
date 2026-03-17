@@ -1,0 +1,25 @@
+{
+	"name": "data-processing-cli",
+	"version": "1.0.0",
+	"description": "",
+	"keywords": [
+		"amelianceskymusic",
+		"data-processing-cli",
+		"node"
+	],
+	"homepage": "https://github.com/AmelianceSkyMusic/data-processing-cli#readme",
+	"bugs": {
+		"url": "https://github.com/AmelianceSkyMusic/data-processing-cli/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/AmelianceSkyMusic/data-processing-cli.git"
+	},
+	"license": "ISC",
+	"author": "amelianceskymusic@gmail.com",
+	"type": "module",
+	"main": "src/main.js",
+	"scripts": {
+		"start": "node src/main.js"
+	}
+}
